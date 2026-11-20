@@ -3,66 +3,167 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Ardhana Clip 9:16 — Mobile & Desktop Video Clipper</title>
+  <title>Clip Oddity 9:16 — Midnight Purple Video Clipper</title>
+  <meta name="description" content="Clip Oddity: pemotong video 9:16 client-side dengan smart crop, auto subtitle, karaoke, dan ekspor langsung di HP maupun desktop." />
+  <meta name="theme-color" content="#05030A" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Bebas+Neue&family=Inter:wght@400;600;700;800;900&family=Montserrat:wght@400;700;800;900&family=Outfit:wght@400;700;800;900&family=Poppins:wght@400;600;700;800;900&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Bebas+Neue&family=Inter:wght@400;600;700;800;900&family=Montserrat:wght@400;500;600;700;800;900&family=Outfit:wght@400;700;800;900&family=Poppins:wght@400;600;700;800;900&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Montserrat', 'system-ui', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          },
           colors: {
             brand: {
-              DEFAULT: '#FA6F05',
-              hover: '#E85F00',
-            }
+              DEFAULT: '#8B5CF6',
+              hover: '#7C3AED',
+              neon: '#C084FC',
+            },
+            // Midnight Purple neutrals: every slate-* utility (incl. JS-generated markup) is re-tinted
+            slate: {
+              50: '#F8FAFC',
+              100: '#F3F0FF',
+              200: '#E4DEFA',
+              300: '#C4B5FD',
+              400: '#A79CC8',
+              500: '#7D70A3',
+              600: '#4E3D7A',
+              700: '#2F1F57',
+              800: '#1D1138',
+              900: '#110922',
+              950: '#0A0514',
+            },
           }
         }
       }
     }
   </script>
   <style>
+    :root {
+      --mp-bg: #05030A;
+      --mp-surface: #110922;
+      --mp-surface-2: #170C2E;
+      --mp-accent: #8B5CF6;
+      --mp-accent-hover: #7C3AED;
+      --mp-neon: #C084FC;
+    }
+    html { background-color: var(--mp-bg); }
     body {
-      background-color: #020617;
-      color: #f8fafc;
-      font-family: 'Inter', sans-serif;
+      background-color: var(--mp-bg);
+      background-image:
+        radial-gradient(60rem 40rem at 10% -10%, rgba(139, 92, 246, 0.16), transparent 60%),
+        radial-gradient(50rem 35rem at 110% 20%, rgba(147, 51, 234, 0.12), transparent 60%),
+        radial-gradient(40rem 30rem at 50% 120%, rgba(192, 132, 252, 0.08), transparent 60%),
+        linear-gradient(180deg, #05030A 0%, #0A0514 100%);
+      background-attachment: fixed;
+      color: #F8FAFC;
+      font-family: 'Montserrat', system-ui, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
+    button, input, select, textarea, label { font-family: 'Montserrat', system-ui, sans-serif; }
+    .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace !important; }
+
+    /* Accent primitives */
+    input[type="checkbox"] { accent-color: var(--mp-accent); }
+    :focus-visible {
+      outline: 2px solid var(--mp-neon);
+      outline-offset: 2px;
+      border-radius: 0.6rem;
+    }
+    input[type="number"]:focus, select:focus, textarea:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: var(--mp-accent) !important;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+    }
+
+    /* Custom range slider */
     input[type="range"] {
-      accent-color: #FA6F05;
-    }
-    ::-webkit-scrollbar {
-      width: 6px;
+      -webkit-appearance: none;
+      appearance: none;
       height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0f172a;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #334155;
       border-radius: 9999px;
+      background: linear-gradient(90deg, #2F1F57, #1D1138);
+      outline: none;
+      accent-color: var(--mp-accent);
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #FA6F05;
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 35% 35%, #E9D5FF, #A855F7 55%, #7C3AED);
+      border: 2px solid #05030A;
+      box-shadow: 0 0 0 2px rgba(192, 132, 252, 0.55), 0 0 14px rgba(168, 85, 247, 0.7);
+      cursor: pointer;
+      transition: transform .15s ease;
     }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 9999px;
+      background: #A855F7;
+      border: 2px solid #05030A;
+      box-shadow: 0 0 0 2px rgba(192, 132, 252, 0.55), 0 0 14px rgba(168, 85, 247, 0.7);
+      cursor: pointer;
+    }
+    input[type="range"]::-moz-range-track { height: 6px; border-radius: 9999px; background: #2F1F57; }
+    input[type="range"]::-moz-range-progress { height: 6px; border-radius: 9999px; background: #8B5CF6; }
+
+    /* Surfaces */
+    .mp-panel {
+      background: linear-gradient(180deg, rgba(23, 12, 46, 0.88), rgba(17, 9, 34, 0.88));
+      border: 1px solid rgba(139, 92, 246, 0.22);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 24px 60px -20px rgba(91, 33, 182, 0.45);
+    }
+    .mp-glow-btn {
+      background: linear-gradient(135deg, #9333EA 0%, #8B5CF6 55%, #7C3AED 100%);
+      box-shadow: 0 10px 30px -10px rgba(147, 51, 234, 0.8), inset 0 1px 0 rgba(255,255,255,0.18);
+    }
+    .mp-glow-btn:hover {
+      background: linear-gradient(135deg, #A855F7 0%, #9333EA 55%, #7C3AED 100%);
+      box-shadow: 0 12px 34px -8px rgba(168, 85, 247, 0.9), inset 0 1px 0 rgba(255,255,255,0.22);
+    }
+    .mp-progress {
+      background: linear-gradient(90deg, #7C3AED, #A855F7, #C084FC);
+      box-shadow: 0 0 12px rgba(192, 132, 252, 0.7);
+    }
+    .tab-btn.bg-\[\#8B5CF6\] {
+      background: linear-gradient(135deg, #9333EA, #7C3AED);
+      box-shadow: 0 6px 20px -6px rgba(168, 85, 247, 0.85), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    select option { background: #110922; color: #F8FAFC; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0A0514; }
+    ::-webkit-scrollbar-thumb { background: #2F1F57; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #8B5CF6; }
+    * { scrollbar-color: #2F1F57 #0A0514; scrollbar-width: thin; }
   </style>
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
 
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 py-3">
+  <header class="sticky top-0 z-40 bg-[#0A0514]/80 backdrop-blur-xl border-b border-violet-500/20 px-4 py-3 shadow-[0_8px_30px_-12px_rgba(139,92,246,0.45)]">
     <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-      <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-[#FA6F05] flex items-center justify-center font-black text-white shadow-lg shadow-orange-500/20">
+      <div class="flex items-center gap-3">
+        <div class="relative w-10 h-10 rounded-xl mp-glow-btn flex items-center justify-center font-black text-white text-[13px] tracking-tighter ring-1 ring-violet-300/30" aria-hidden="true">
           9:16
         </div>
         <div>
-          <h1 class="font-extrabold text-base sm:text-lg tracking-tight leading-none">
-            Ardhana Clip <span class="text-[#FA6F05]">9:16</span>
+          <h1 class="font-black text-base sm:text-xl tracking-tight leading-none uppercase">
+            Clip Oddity <span class="ml-1 align-middle text-[10px] sm:text-xs font-extrabold px-1.5 py-0.5 rounded-md bg-violet-500/15 text-[#C084FC] border border-violet-400/30 tracking-widest">9:16</span>
           </h1>
-          <p class="text-[11px] text-slate-400 mt-0.5">Client-Side Clipper • Mobile & Desktop Ready</p>
+          <p class="text-[11px] text-slate-400 mt-1 font-medium tracking-wide">Midnight Clipper • Mobile &amp; Desktop Ready</p>
         </div>
       </div>
 
@@ -70,7 +171,7 @@
         <button id="btnLoadDemo" class="text-xs font-semibold px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
           ✨ Video Demo
         </button>
-        <label class="cursor-pointer text-xs font-bold px-3.5 py-2 rounded-lg bg-[#FA6F05] hover:bg-[#E85F00] text-white transition shadow">
+        <label class="cursor-pointer text-xs font-bold px-3.5 py-2 rounded-lg mp-glow-btn text-white transition shadow">
           📂 Upload Video
           <input id="videoInput" type="file" accept="video/mp4,video/webm,video/quicktime,video/x-matroska,video/*" class="hidden" />
         </label>
@@ -83,14 +184,14 @@
 
     <!-- Left / Top: 9:16 Live Preview & Export -->
     <section class="lg:col-span-5 flex flex-col items-center">
-      <div class="w-full max-w-[360px] bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-2xl">
+      <div class="w-full max-w-[380px] mp-panel rounded-2xl p-3">
         <div class="flex items-center justify-between mb-2 px-1">
           <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="w-2 h-2 rounded-full bg-[#C084FC] animate-pulse shadow-[0_0_10px_#C084FC]"></span>
             Live Canvas 9:16
           </span>
           <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer select-none">
-            <input id="toggleSafeZone" type="checkbox" checked class="rounded accent-[#FA6F05]" />
+            <input id="toggleSafeZone" type="checkbox" checked class="rounded accent-[#8B5CF6]" />
             Safe Zone
           </label>
         </div>
@@ -100,14 +201,14 @@
           <canvas id="previewCanvas" width="1080" height="1920" class="w-full h-full object-contain block"></canvas>
 
           <!-- Empty State Overlay -->
-          <div id="emptyOverlay" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-slate-950/85">
+          <div id="emptyOverlay" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-[#05030A]/85 backdrop-blur-sm">
             <div class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl mb-3">
               🎬
             </div>
             <p class="font-bold text-sm text-white">Belum Ada Video</p>
             <p class="text-xs text-slate-400 mt-1 mb-4">Upload video dari galeri HP / komputer atau coba video demo.</p>
             <div class="flex gap-2">
-              <label class="cursor-pointer text-xs font-bold px-3.5 py-2 rounded-lg bg-[#FA6F05] hover:bg-[#E85F00] text-white">
+              <label class="cursor-pointer text-xs font-bold px-3.5 py-2 rounded-lg mp-glow-btn text-white">
                 Pilih Video
                 <input id="videoInputEmpty" type="file" accept="video/*" class="hidden" />
               </label>
@@ -129,7 +230,7 @@
             <button id="btnPlayPause" class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition">
               ▶️ Play / Pause
             </button>
-            <button id="btnPreviewClip" class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-[#FA6F05]/40 text-[#FA6F05] font-bold text-xs flex items-center justify-center gap-1.5 transition">
+            <button id="btnPreviewClip" class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-violet-500/50 text-[#C084FC] font-bold text-xs flex items-center justify-center gap-1.5 transition">
               🔁 Preview Klip
             </button>
           </div>
@@ -145,18 +246,18 @@
             </select>
           </div>
 
-          <button id="btnExport" class="w-full py-3 px-4 rounded-xl bg-[#FA6F05] hover:bg-[#E85F00] active:scale-[0.99] text-white font-extrabold text-sm shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 transition">
+          <button id="btnExport" class="w-full py-3 px-4 rounded-xl mp-glow-btn active:scale-[0.99] text-white font-extrabold text-sm flex items-center justify-center gap-2 transition">
             ⚡ Pangkas & Render Video
           </button>
 
           <!-- Render Progress Bar -->
           <div id="exportProgressBox" class="hidden bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-1.5">
             <div class="flex justify-between text-xs font-semibold">
-              <span id="exportStatusText" class="text-orange-400">Merender video...</span>
+              <span id="exportStatusText" class="text-[#C084FC]">Merender video...</span>
               <span id="exportPercentText" class="font-mono text-white">0%</span>
             </div>
             <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-              <div id="exportProgressBar" class="h-full bg-[#FA6F05] transition-all duration-150" style="width: 0%"></div>
+              <div id="exportProgressBar" class="h-full mp-progress transition-all duration-150" style="width: 0%"></div>
             </div>
             <p class="text-[11px] text-slate-400">Jangan kunci layar HP selama proses render berlangsung.</p>
           </div>
@@ -174,7 +275,7 @@
               <button id="btnMobileShareSave" class="py-2.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow">
                 📲 Simpan ke Galeri HP
               </button>
-              <a id="btnDirectDownload" href="#" download="ardhana-clip-9x16.mp4" class="py-2.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700 text-center">
+              <a id="btnDirectDownload" href="#" download="clip-oddity-9x16.mp4" class="py-2.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700 text-center">
                 ⬇️ Unduh File
               </a>
             </div>
@@ -187,10 +288,10 @@
     </section>
 
     <!-- Right / Bottom: Tabs & Controls -->
-    <section class="lg:col-span-7 flex flex-col bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+    <section class="lg:col-span-7 flex flex-col mp-panel rounded-2xl overflow-hidden">
       <!-- Navigation Tabs -->
-      <div class="grid grid-cols-3 bg-slate-950/70 border-b border-slate-800 p-1.5 gap-1.5">
-        <button data-tab="tabVideoCrop" class="tab-btn active-tab py-2.5 px-2 rounded-xl text-xs font-bold bg-[#FA6F05] text-white transition">
+      <div class="grid grid-cols-3 bg-[#05030A]/80 border-b border-violet-500/20 p-1.5 gap-1.5">
+        <button data-tab="tabVideoCrop" class="tab-btn active-tab py-2.5 px-2 rounded-xl text-xs font-bold bg-[#8B5CF6] text-white transition">
           1. Video & Crop
         </button>
         <button data-tab="tabSubtitle" class="tab-btn py-2.5 px-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition">
@@ -204,7 +305,7 @@
       <!-- TAB 1: VIDEO, TRIMMER, AUTO CLIP & CROP -->
       <div id="tabVideoCrop" class="tab-panel p-4 space-y-5 overflow-y-auto max-h-[75vh]">
         <!-- Video Metadata -->
-        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5">
+        <div class="bg-[#0A0514]/70 border border-violet-500/15 rounded-xl p-3.5">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Informasi Video</h2>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
             <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
@@ -227,10 +328,10 @@
         </div>
 
         <!-- Trimmer -->
-        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 space-y-3">
+        <div class="bg-[#0A0514]/70 border border-violet-500/15 rounded-xl p-3.5 space-y-3">
           <div class="flex items-center justify-between">
             <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">✂️ Pemotong Durasi (Trimmer)</h2>
-            <span id="clipDurationBadge" class="text-xs font-mono font-bold text-[#FA6F05] bg-orange-500/10 px-2 py-0.5 rounded">Durasi Klip: 0.0s</span>
+            <span id="clipDurationBadge" class="text-xs font-mono font-bold text-[#C084FC] bg-violet-500/15 px-2 py-0.5 rounded">Durasi Klip: 0.0s</span>
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -251,10 +352,10 @@
         </div>
 
         <!-- Crop & Smart Framing -->
-        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 space-y-3">
+        <div class="bg-[#0A0514]/70 border border-violet-500/15 rounded-xl p-3.5 space-y-3">
           <div class="flex items-center justify-between">
             <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">📐 Smart Crop 9:16</h2>
-            <span id="cropPercentLabel" class="text-xs font-mono font-bold text-[#FA6F05]">50% (Tengah)</span>
+            <span id="cropPercentLabel" class="text-xs font-mono font-bold text-[#C084FC]">50% (Tengah)</span>
           </div>
           <input id="cropSlider" type="range" min="0" max="100" value="50" class="w-full cursor-pointer" />
           <div class="grid grid-cols-3 gap-2">
@@ -265,13 +366,13 @@
         </div>
 
         <!-- Auto Clip / Smart Detect -->
-        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 space-y-3">
+        <div class="bg-[#0A0514]/70 border border-violet-500/15 rounded-xl p-3.5 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
               <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">✨ Auto Clip & Smart Subject Detect</h2>
               <p class="text-[11px] text-slate-400 mt-0.5">Deteksi otomatis segmen aktif 15–60 detik & fokus subjek.</p>
             </div>
-            <button id="btnAutoDetect" class="py-2 px-3.5 rounded-lg bg-[#FA6F05] hover:bg-[#E85F00] text-white font-bold text-xs shadow">
+            <button id="btnAutoDetect" class="py-2 px-3.5 rounded-lg mp-glow-btn text-white font-bold text-xs shadow">
               ✨ Analisis Video
             </button>
           </div>
@@ -284,7 +385,7 @@
       <!-- TAB 2: AUTO SUBTITLE & TIMELINE EDITOR -->
       <div id="tabSubtitle" class="tab-panel hidden p-4 space-y-4 overflow-y-auto max-h-[75vh]">
         <!-- Auto Speech Recognition & SRT -->
-        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 space-y-3">
+        <div class="bg-[#0A0514]/70 border border-violet-500/15 rounded-xl p-3.5 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">🎙️ Auto Subtitle Generator</h2>
             <select id="speechLang" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs">
@@ -295,7 +396,7 @@
           </div>
 
           <div class="flex flex-wrap gap-2">
-            <button id="btnStartSpeech" class="flex-1 py-2.5 px-3 rounded-lg bg-[#FA6F05] hover:bg-[#E85F00] text-white font-bold text-xs">
+            <button id="btnStartSpeech" class="flex-1 py-2.5 px-3 rounded-lg mp-glow-btn text-white font-bold text-xs">
               🎙️ Mulai Auto-Transkrip Klip
             </button>
             <button id="btnStopSpeech" class="hidden py-2.5 px-3 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs">
@@ -315,7 +416,7 @@
             <button id="btnExportSrt" class="py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold">
               📤 Export .SRT
             </button>
-            <button id="btnAddSubBlock" class="py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-[#FA6F05]">
+            <button id="btnAddSubBlock" class="py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-[#C084FC]">
               ➕ Tambah Baris
             </button>
           </div>
@@ -334,7 +435,7 @@
       <!-- TAB 3: STYLING, TYPOGRAPHY & POSITION -->
       <div id="tabStyle" class="tab-panel hidden p-4 space-y-4 overflow-y-auto max-h-[75vh]">
         <!-- Viral TikTok Presets -->
-        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 space-y-2.5">
+        <div class="bg-[#0A0514]/70 border border-violet-500/15 rounded-xl p-3.5 space-y-2.5">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">🔥 Preset Viral TikTok / Reels</h2>
           <div class="grid grid-cols-2 gap-2">
             <button data-preset="yellow" class="style-preset py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-left">
@@ -353,7 +454,7 @@
         </div>
 
         <!-- Typography -->
-        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 space-y-3">
+        <div class="bg-[#0A0514]/70 border border-violet-500/15 rounded-xl p-3.5 space-y-3">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">🔤 Tipografi & Warna</h2>
           <div class="grid grid-cols-2 gap-3 text-xs">
             <div>
@@ -385,13 +486,13 @@
           <div class="grid grid-cols-2 gap-3 text-xs">
             <div>
               <label class="text-slate-400 flex justify-between mb-1">
-                <span>Ukuran Font</span><span id="valFontSize" class="font-mono text-[#FA6F05]">68px</span>
+                <span>Ukuran Font</span><span id="valFontSize" class="font-mono text-[#C084FC]">68px</span>
               </label>
               <input id="styleFontSize" type="range" min="24" max="130" value="68" class="w-full" />
             </div>
             <div>
               <label class="text-slate-400 flex justify-between mb-1">
-                <span>Tebal Stroke</span><span id="valStroke" class="font-mono text-[#FA6F05]">8px</span>
+                <span>Tebal Stroke</span><span id="valStroke" class="font-mono text-[#C084FC]">8px</span>
               </label>
               <input id="styleStrokeWidth" type="range" min="0" max="15" value="8" class="w-full" />
             </div>
@@ -433,7 +534,7 @@
         </div>
 
         <!-- Position & Safe Zone -->
-        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 space-y-3">
+        <div class="bg-[#0A0514]/70 border border-violet-500/15 rounded-xl p-3.5 space-y-3">
           <div class="flex items-center justify-between">
             <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">📍 Posisi Subtitle</h2>
             <div class="flex gap-1.5">
@@ -445,13 +546,13 @@
           <div class="grid grid-cols-2 gap-3 text-xs">
             <div>
               <label class="text-slate-400 flex justify-between mb-1">
-                <span>Posisi X</span><span id="valPosX" class="font-mono text-[#FA6F05]">50%</span>
+                <span>Posisi X</span><span id="valPosX" class="font-mono text-[#C084FC]">50%</span>
               </label>
               <input id="stylePosX" type="range" min="10" max="90" value="50" class="w-full" />
             </div>
             <div>
               <label class="text-slate-400 flex justify-between mb-1">
-                <span>Posisi Y</span><span id="valPosY" class="font-mono text-[#FA6F05]">74%</span>
+                <span>Posisi Y</span><span id="valPosY" class="font-mono text-[#C084FC]">74%</span>
               </label>
               <input id="stylePosY" type="range" min="10" max="90" value="74" class="w-full" />
             </div>
@@ -481,7 +582,7 @@
       isExporting: false,
       previewClipMode: false,
       lastRenderedBlob: null,
-      lastRenderedFilename: 'ardhana-clip-9x16.mp4',
+      lastRenderedFilename: 'clip-oddity-9x16.mp4',
       lastRenderedUrl: null,
       subtitles: [
         { id: 1, start: 0.2, end: 3.5, text: 'BITCOIN $1 JUTA DI 2031?!' },
@@ -548,10 +649,10 @@
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => {
-          b.classList.remove('bg-[#FA6F05]', 'text-white');
+          b.classList.remove('bg-[#8B5CF6]', 'text-white');
           b.classList.add('text-slate-400');
         });
-        btn.classList.add('bg-[#FA6F05]', 'text-white');
+        btn.classList.add('bg-[#8B5CF6]', 'text-white');
         btn.classList.remove('text-slate-400');
 
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
@@ -631,20 +732,20 @@
       const timer = setInterval(() => {
         const t = frame / 30;
         const grad = dCtx.createLinearGradient(0, 0, 1280, 720);
-        grad.addColorStop(0, '#0f172a');
-        grad.addColorStop(1, '#1e293b');
+        grad.addColorStop(0, '#0A0514');
+        grad.addColorStop(1, '#2E1065');
         dCtx.fillStyle = grad;
         dCtx.fillRect(0, 0, 1280, 720);
 
         // Moving speaker circle
         const cx = 640 + Math.sin(t * 2) * 240;
-        dCtx.fillStyle = '#FA6F05';
+        dCtx.fillStyle = '#8B5CF6';
         dCtx.beginPath();
         dCtx.arc(cx, 330, 110, 0, Math.PI * 2);
         dCtx.fill();
 
         dCtx.fillStyle = '#FFFFFF';
-        dCtx.font = 'bold 48px Inter, sans-serif';
+        dCtx.font = 'bold 48px Montserrat, sans-serif';
         dCtx.textAlign = 'center';
         dCtx.fillText('PODCAST CRYPTO 2031 DEMO', 640, 540);
 
@@ -721,7 +822,7 @@
     document.getElementById('btnAutoDetect').addEventListener('click', async () => {
       if (!state.hasVideo) return alert('Silakan upload video terlebih dahulu.');
       const listEl = document.getElementById('autoClipsList');
-      listEl.innerHTML = '<p class="text-orange-400 font-semibold animate-pulse">⏳ Menganalisis segmen & fokus gerakan...</p>';
+      listEl.innerHTML = '<p class="text-[#C084FC] font-semibold animate-pulse">⏳ Menganalisis segmen & fokus gerakan...</p>';
 
       // Sample center of motion on current frame
       const sampleCanvas = document.createElement('canvas');
@@ -777,7 +878,7 @@
             <p class="font-bold text-slate-100">${c.title}</p>
             <p class="text-[11px] font-mono text-slate-400 mt-0.5">[${formatTime(c.start)} - ${formatTime(c.end)}] (${(c.end - c.start).toFixed(0)} dtk)</p>
           </div>
-          <span class="text-xs font-extrabold text-[#FA6F05] bg-orange-500/10 px-2 py-1 rounded">Viral ${c.score}</span>
+          <span class="text-xs font-extrabold text-[#C084FC] bg-violet-500/15 px-2 py-1 rounded">Viral ${c.score}</span>
         </button>
       `).join('');
 
@@ -801,7 +902,7 @@
       container.innerHTML = state.subtitles.map((sub, idx) => `
         <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 space-y-2">
           <div class="flex items-center gap-2 text-xs">
-            <span class="font-mono font-bold text-[#FA6F05]">#${idx + 1}</span>
+            <span class="font-mono font-bold text-[#C084FC]">#${idx + 1}</span>
             <input type="number" step="0.1" value="${sub.start}" data-id="${sub.id}" data-field="start" class="sub-time w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1 font-mono text-xs" />
             <span class="text-slate-500">→</span>
             <input type="number" step="0.1" value="${sub.end}" data-id="${sub.id}" data-field="end" class="sub-time w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1 font-mono text-xs" />
@@ -857,7 +958,7 @@
       const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'ardhana-subtitle.srt';
+      a.download = 'clip-oddity-subtitle.srt';
       a.click();
     });
 
@@ -989,7 +1090,7 @@
         } else if (p === 'neon') {
           Object.assign(state.style, { textColor: '#ECFDF5', activeColor: '#4ADE80', strokeColor: '#064E3B', strokeWidth: 6, bgOpacity: 0, glow: 24, popZoom: false });
         } else if (p === 'badge') {
-          Object.assign(state.style, { textColor: '#FFFFFF', activeColor: '#FA6F05', strokeColor: '#000000', strokeWidth: 0, bgColor: '#000000', bgOpacity: 80, glow: 0, popZoom: false });
+          Object.assign(state.style, { textColor: '#FFFFFF', activeColor: '#C084FC', strokeColor: '#000000', strokeWidth: 0, bgColor: '#000000', bgOpacity: 80, glow: 0, popZoom: false });
         } else if (p === 'popup') {
           Object.assign(state.style, { textColor: '#FFFFFF', activeColor: '#38BDF8', strokeColor: '#000000', strokeWidth: 10, bgOpacity: 0, glow: 8, popZoom: true });
         }
@@ -1185,13 +1286,13 @@
       // Safe Zone Overlay (Preview Only, never burned into exported video)
       if (includeOverlayUI && state.showSafeZone) {
         targetCtx.save();
-        targetCtx.strokeStyle = 'rgba(250, 111, 5, 0.55)';
+        targetCtx.strokeStyle = 'rgba(192, 132, 252, 0.55)';
         targetCtx.lineWidth = 4;
         targetCtx.setLineDash([16, 12]);
         // Top & Bottom UI zones + Right action buttons zone
         targetCtx.strokeRect(54, 220, targetW - 220, targetH - 640);
-        targetCtx.fillStyle = 'rgba(250, 111, 5, 0.85)';
-        targetCtx.font = 'bold 26px Inter, sans-serif';
+        targetCtx.fillStyle = 'rgba(192, 132, 252, 0.9)';
+        targetCtx.font = 'bold 26px Montserrat, sans-serif';
         targetCtx.fillText('SAFE ZONE (TIKTOK / REELS / SHORTS)', 70, 200);
         targetCtx.restore();
       }
@@ -1285,7 +1386,7 @@
 
       const isMp4 = chosenMime.includes('mp4');
       const fileExt = isMp4 ? 'mp4' : 'webm';
-      const outputFilename = `ardhana-clip-9x16.${fileExt}`;
+      const outputFilename = `clip-oddity-9x16.${fileExt}`;
 
       const recorder = chosenMime
         ? new MediaRecorder(canvasStream, { mimeType: chosenMime, videoBitsPerSecond: outW === 1080 ? 8000000 : 4500000 })
@@ -1380,7 +1481,7 @@
         try {
           await navigator.share({
             files: [file],
-            title: 'Ardhana Clip 9:16',
+            title: 'Clip Oddity 9:16',
             text: 'Video vertikal 9:16 siap upload'
           });
           return;
