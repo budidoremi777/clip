@@ -206,7 +206,10 @@
               🎬
             </div>
             <p class="font-bold text-sm text-white">Belum Ada Video</p>
-            <p class="text-xs text-slate-400 mt-1 mb-4">Upload video dari galeri HP / komputer atau coba video demo.</p>
+            <p class="text-xs text-slate-400 mt-1 mb-4">Tempel URL YouTube, upload video dari galeri / komputer, atau coba video demo.</p>
+            <button id="btnFocusYt" type="button" class="mb-2 text-xs font-extrabold px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white transition">
+              Tempel URL YouTube
+            </button>
             <div class="flex gap-2">
               <label class="cursor-pointer text-xs font-bold px-3.5 py-2 rounded-lg mp-glow-btn text-white">
                 Pilih Video
@@ -292,7 +295,7 @@
       <!-- Navigation Tabs -->
       <div class="grid grid-cols-3 bg-[#05030A]/80 border-b border-violet-500/20 p-1.5 gap-1.5">
         <button data-tab="tabVideoCrop" class="tab-btn active-tab py-2.5 px-2 rounded-xl text-xs font-bold bg-[#8B5CF6] text-white transition">
-          1. Video & Crop
+          1. Sumber & Crop
         </button>
         <button data-tab="tabSubtitle" class="tab-btn py-2.5 px-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition">
           2. Auto Subtitle
@@ -304,6 +307,92 @@
 
       <!-- TAB 1: VIDEO, TRIMMER, AUTO CLIP & CROP -->
       <div id="tabVideoCrop" class="tab-panel p-4 space-y-5 overflow-y-auto max-h-[75vh]">
+        <!-- YouTube Source -->
+        <div id="ytCard" class="relative bg-gradient-to-br from-[#170C2E] to-[#0A0514] border border-violet-500/40 rounded-xl p-3.5 space-y-3 shadow-[0_0_40px_-18px_rgba(192,132,252,0.7)]">
+          <div class="flex items-center justify-between gap-2">
+            <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#C4B5FD] flex items-center gap-2">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-red-600 text-white text-[10px] font-black" aria-hidden="true">YT</span>
+              Clip dari URL YouTube
+            </h2>
+            <span id="ytStepBadge" class="text-[10px] font-bold uppercase tracking-widest text-[#C084FC] bg-violet-500/15 border border-violet-400/30 px-2 py-0.5 rounded">Langkah 1/3</span>
+          </div>
+
+          <form id="ytForm" class="flex flex-col sm:flex-row gap-2" novalidate>
+            <label for="ytUrlInput" class="sr-only">URL video YouTube</label>
+            <input id="ytUrlInput" type="url" inputmode="url" autocomplete="off" spellcheck="false"
+              placeholder="https://youtube.com/watch?v=... atau youtu.be/..."
+              class="flex-1 min-w-0 bg-[#05030A] border border-violet-500/30 focus:border-[#8B5CF6] focus:ring-2 focus:ring-[#8B5CF6]/40 outline-none rounded-lg px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 font-medium" />
+            <button id="ytLoadBtn" type="submit" class="py-2.5 px-4 rounded-lg mp-glow-btn text-white font-extrabold text-xs whitespace-nowrap">
+              Muat Video
+            </button>
+          </form>
+          <p id="ytUrlError" class="hidden text-[11px] font-semibold text-rose-400" role="alert"></p>
+
+          <!-- Player + segment picker -->
+          <div id="ytPlayerBox" class="hidden space-y-3">
+            <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-black border border-violet-500/25">
+              <div id="ytPlayer" class="absolute inset-0 w-full h-full"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button id="ytMarkStart" type="button" class="py-2 px-2 rounded-lg bg-[#170C2E] hover:bg-[#21123F] border border-violet-500/30 text-xs font-bold text-slate-100 transition">
+                Set Mulai <span id="ytStartLabel" class="font-mono text-[#C084FC] ml-1">00:00.0</span>
+              </button>
+              <button id="ytMarkEnd" type="button" class="py-2 px-2 rounded-lg bg-[#170C2E] hover:bg-[#21123F] border border-violet-500/30 text-xs font-bold text-slate-100 transition">
+                Set Selesai <span id="ytEndLabel" class="font-mono text-[#C084FC] ml-1">00:15.0</span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+              <span>Putar video, lalu tekan Set Mulai / Selesai di titik yang diinginkan.</span>
+              <span id="ytSegLabel" class="font-mono font-bold text-[#C4B5FD] whitespace-nowrap ml-2">15.0s</span>
+            </div>
+
+            <button id="ytFetchBtn" type="button" class="w-full py-3 px-4 rounded-xl mp-glow-btn text-white font-extrabold text-sm transition active:scale-[0.99]">
+              Ambil &amp; Edit Klip Ini
+            </button>
+
+            <div id="ytFetchStatus" class="hidden bg-[#05030A] border border-violet-500/25 rounded-lg p-3 space-y-1.5" aria-live="polite">
+              <div class="flex justify-between text-xs font-semibold gap-2">
+                <span id="ytFetchText" class="text-[#C084FC]">Menghubungi server...</span>
+                <span id="ytFetchPct" class="font-mono text-white">0%</span>
+              </div>
+              <div class="w-full h-1.5 bg-[#170C2E] rounded-full overflow-hidden">
+                <div id="ytFetchBar" class="h-full mp-progress transition-all duration-150" style="width:0%"></div>
+              </div>
+            </div>
+
+            <div id="ytFallback" class="hidden bg-rose-950/30 border border-rose-500/40 rounded-lg p-3 space-y-2">
+              <p class="text-xs font-bold text-rose-300">Video tidak bisa diambil otomatis</p>
+              <p id="ytFallbackReason" class="text-[11px] text-slate-300 leading-relaxed"></p>
+              <p class="text-[11px] text-slate-400 leading-relaxed">Titik mulai/selesai Anda tetap tersimpan. Unduh video ini secara manual, lalu upload filenya, dan segmen langsung terpasang.</p>
+              <label class="inline-flex cursor-pointer text-xs font-bold px-3.5 py-2 rounded-lg mp-glow-btn text-white">
+                Upload File Video
+                <input id="videoInputFallback" type="file" accept="video/*" class="hidden" />
+              </label>
+            </div>
+          </div>
+
+          <details class="group">
+            <summary class="cursor-pointer select-none text-[11px] font-bold text-slate-400 hover:text-[#C4B5FD] list-none flex items-center gap-1.5">
+              <span class="inline-block transition group-open:rotate-90" aria-hidden="true">›</span>
+              Pengaturan server pengambil (Cobalt)
+            </summary>
+            <div class="mt-2.5 space-y-2">
+              <div>
+                <label for="cobaltInstance" class="text-[11px] text-slate-400 font-medium block mb-1">URL instance Cobalt</label>
+                <input id="cobaltInstance" type="url" placeholder="https://cobalt.domain-anda.com" autocomplete="off"
+                  class="w-full bg-[#05030A] border border-violet-500/30 focus:border-[#8B5CF6] outline-none rounded-lg px-3 py-2 text-xs text-slate-100 font-mono" />
+              </div>
+              <div>
+                <label for="cobaltKey" class="text-[11px] text-slate-400 font-medium block mb-1">API Key (opsional)</label>
+                <input id="cobaltKey" type="password" placeholder="aaaaaaaa-bbbb-cccc-..." autocomplete="off"
+                  class="w-full bg-[#05030A] border border-violet-500/30 focus:border-[#8B5CF6] outline-none rounded-lg px-3 py-2 text-xs text-slate-100 font-mono" />
+              </div>
+              <p class="text-[11px] text-slate-500 leading-relaxed">Instance publik resmi (api.cobalt.tools) memakai proteksi bot, jadi butuh instance sendiri atau izin dari pemilik instance. Instance harus mengizinkan CORS dari domain ini. Pengaturan disimpan di browser ini saja.</p>
+            </div>
+          </details>
+        </div>
+
         <!-- Video Metadata -->
         <div class="bg-[#0A0514]/70 border border-violet-500/15 rounded-xl p-3.5">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Informasi Video</h2>
@@ -606,6 +695,8 @@
       }
     };
 
+    let pendingTrim = null;
+
     // --- DOM ELEMENTS ---
     const video = document.getElementById('sourceVideo');
     const canvas = document.getElementById('previewCanvas');
@@ -678,8 +769,15 @@
       state.duration = video.duration;
       state.width = video.videoWidth;
       state.height = video.videoHeight;
-      state.trimStart = 0;
-      state.trimEnd = Math.min(30, Math.max(1, Number(video.duration.toFixed(1))));
+      if (pendingTrim && pendingTrim.start < video.duration) {
+        state.trimStart = Number(pendingTrim.start.toFixed(1));
+        state.trimEnd = Number(Math.min(video.duration, Math.max(pendingTrim.end, pendingTrim.start + 0.5)).toFixed(1));
+      } else {
+        state.trimStart = 0;
+        state.trimEnd = Math.min(30, Math.max(1, Number(video.duration.toFixed(1))));
+      }
+      const seekTarget = pendingTrim ? state.trimStart : 0;
+      pendingTrim = null;
 
       document.getElementById('metaName').textContent = state.fileName;
       document.getElementById('metaDuration').textContent = formatTime(state.duration);
@@ -695,7 +793,7 @@
 
       updateClipDurationBadge();
       emptyOverlay.classList.add('hidden');
-      video.currentTime = 0;
+      video.currentTime = seekTarget;
     });
 
     // --- SYNTHETIC DEMO VIDEO GENERATOR (WORKS ON MOBILE TOO) ---
@@ -767,6 +865,228 @@
 
     document.getElementById('btnLoadDemo').addEventListener('click', loadDemoVideo);
     document.getElementById('btnLoadDemoEmpty').addEventListener('click', loadDemoVideo);
+
+    // --- YOUTUBE SOURCE (preview + segment picker + auto fetch via Cobalt) ---
+    const yt = { id: null, url: '', player: null, apiReady: null, start: 0, end: 15, title: '' };
+    const $ = id => document.getElementById(id);
+
+    function parseYouTubeId(raw) {
+      if (!raw) return null;
+      let u;
+      try { u = new URL(raw.trim().startsWith('http') ? raw.trim() : 'https://' + raw.trim()); } catch { return null; }
+      const host = u.hostname.replace(/^www\.|^m\.|^music\./, '');
+      let id = null;
+      if (host === 'youtu.be') id = u.pathname.slice(1).split('/')[0];
+      else if (host === 'youtube.com' || host === 'youtube-nocookie.com') {
+        if (u.pathname === '/watch') id = u.searchParams.get('v');
+        else {
+          const m = u.pathname.match(/^\/(shorts|embed|live|v)\/([^/?#]+)/);
+          if (m) id = m[2];
+        }
+      }
+      return id && /^[A-Za-z0-9_-]{11}$/.test(id) ? id : null;
+    }
+
+    function loadYouTubeApi() {
+      if (yt.apiReady) return yt.apiReady;
+      yt.apiReady = new Promise((resolve, reject) => {
+        if (window.YT && window.YT.Player) return resolve();
+        window.onYouTubeIframeAPIReady = () => resolve();
+        const s = document.createElement('script');
+        s.src = 'https://www.youtube.com/iframe_api';
+        s.onerror = () => { yt.apiReady = null; reject(new Error('Gagal memuat YouTube player')); };
+        document.head.appendChild(s);
+      });
+      return yt.apiReady;
+    }
+
+    function ytTime() {
+      return yt.player && yt.player.getCurrentTime ? yt.player.getCurrentTime() : 0;
+    }
+
+    function updateYtSegmentUI() {
+      $('ytStartLabel').textContent = formatTime(yt.start);
+      $('ytEndLabel').textContent = formatTime(yt.end);
+      $('ytSegLabel').textContent = `${Math.max(0, yt.end - yt.start).toFixed(1)}s`;
+    }
+
+    function setYtStep(n) {
+      $('ytStepBadge').textContent = `Langkah ${n}/3`;
+    }
+
+    function showYtError(msg) {
+      const el = $('ytUrlError');
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    async function loadYouTubeUrl(raw) {
+      const id = parseYouTubeId(raw);
+      if (!id) { showYtError('URL YouTube tidak valid. Contoh: https://youtu.be/dQw4w9WgXcQ'); return; }
+      showYtError('');
+      yt.id = id;
+      yt.url = `https://www.youtube.com/watch?v=${id}`;
+      yt.start = 0; yt.end = 15;
+      updateYtSegmentUI();
+      $('ytFallback').classList.add('hidden');
+      $('ytFetchStatus').classList.add('hidden');
+      $('ytPlayerBox').classList.remove('hidden');
+      const btn = $('ytLoadBtn');
+      btn.disabled = true; btn.textContent = 'Memuat...';
+      try {
+        await loadYouTubeApi();
+        if (yt.player) {
+          yt.player.loadVideoById(id);
+        } else {
+          yt.player = new YT.Player('ytPlayer', {
+            videoId: id,
+            width: '100%', height: '100%',
+            playerVars: { playsinline: 1, rel: 0, modestbranding: 1 },
+            events: {
+              onReady: e => {
+                const dur = e.target.getDuration() || 0;
+                if (dur) { yt.end = Math.min(15, dur); updateYtSegmentUI(); }
+                yt.title = (e.target.getVideoData && e.target.getVideoData().title) || '';
+              },
+              onStateChange: e => {
+                if (e.data === YT.PlayerState.PLAYING && e.target.getVideoData) {
+                  yt.title = e.target.getVideoData().title || yt.title;
+                }
+              }
+            }
+          });
+        }
+        setYtStep(2);
+      } catch (err) {
+        showYtError(err.message);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Muat Video';
+      }
+    }
+
+    $('ytForm').addEventListener('submit', e => {
+      e.preventDefault();
+      loadYouTubeUrl($('ytUrlInput').value);
+    });
+    $('ytUrlInput').addEventListener('paste', () => {
+      setTimeout(() => { if (parseYouTubeId($('ytUrlInput').value)) loadYouTubeUrl($('ytUrlInput').value); }, 0);
+    });
+
+    $('ytMarkStart').addEventListener('click', () => {
+      yt.start = Number(ytTime().toFixed(1));
+      if (yt.end <= yt.start) yt.end = yt.start + 15;
+      updateYtSegmentUI();
+    });
+    $('ytMarkEnd').addEventListener('click', () => {
+      yt.end = Number(ytTime().toFixed(1));
+      if (yt.end <= yt.start) yt.start = Math.max(0, yt.end - 15);
+      updateYtSegmentUI();
+    });
+
+    $('btnFocusYt').addEventListener('click', () => {
+      document.querySelector('.tab-btn[data-tab="tabVideoCrop"]').click();
+      $('ytCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      $('ytUrlInput').focus({ preventScroll: true });
+    });
+
+    const cobaltInstanceInput = $('cobaltInstance');
+    const cobaltKeyInput = $('cobaltKey');
+    cobaltInstanceInput.value = localStorage.getItem('clipOddity.cobaltInstance') || '';
+    cobaltKeyInput.value = localStorage.getItem('clipOddity.cobaltKey') || '';
+    cobaltInstanceInput.addEventListener('change', () => localStorage.setItem('clipOddity.cobaltInstance', cobaltInstanceInput.value.trim()));
+    cobaltKeyInput.addEventListener('change', () => localStorage.setItem('clipOddity.cobaltKey', cobaltKeyInput.value.trim()));
+
+    function setFetchProgress(text, pct) {
+      $('ytFetchStatus').classList.remove('hidden');
+      $('ytFetchText').textContent = text;
+      $('ytFetchPct').textContent = pct == null ? '...' : `${Math.round(pct)}%`;
+      $('ytFetchBar').style.width = `${pct == null ? 15 : pct}%`;
+    }
+
+    function showFallback(reason) {
+      $('ytFetchStatus').classList.add('hidden');
+      $('ytFallbackReason').textContent = reason;
+      $('ytFallback').classList.remove('hidden');
+    }
+
+    async function fetchFromCobalt() {
+      const instance = cobaltInstanceInput.value.trim().replace(/\/+$/, '');
+      if (!instance) throw new Error('Belum ada server pengambil (Cobalt) yang diatur. Isi di "Pengaturan server pengambil" di bawah.');
+      const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
+      const key = cobaltKeyInput.value.trim();
+      if (key) headers['Authorization'] = `Api-Key ${key}`;
+
+      setFetchProgress('Menghubungi server pengambil...', null);
+      let res;
+      try {
+        res = await fetch(instance + '/', {
+          method: 'POST', headers,
+          body: JSON.stringify({ url: yt.url, videoQuality: '720', youtubeVideoCodec: 'h264', youtubeVideoContainer: 'mp4', downloadMode: 'auto', filenameStyle: 'basic' })
+        });
+      } catch {
+        throw new Error('Server tidak bisa dihubungi atau memblokir CORS dari domain ini.');
+      }
+      const data = await res.json().catch(() => ({}));
+      if (data.status === 'error' || !res.ok) {
+        const code = (data.error && data.error.code) || `HTTP ${res.status}`;
+        throw new Error(`Server menolak permintaan (${code}).`);
+      }
+      let mediaUrl = data.url;
+      if (data.status === 'picker') {
+        const vid = (data.picker || []).find(p => p.type === 'video');
+        mediaUrl = vid && vid.url;
+      } else if (data.status === 'local-processing') {
+        throw new Error('Server meminta pemrosesan lokal (format terpisah) yang belum didukung.');
+      }
+      if (!mediaUrl) throw new Error('Server tidak mengembalikan link video.');
+
+      setFetchProgress('Mengunduh video...', 0);
+      let mediaRes;
+      try { mediaRes = await fetch(mediaUrl); }
+      catch { throw new Error('Link video diblokir CORS oleh server sumber.'); }
+      if (!mediaRes.ok) throw new Error(`Gagal mengunduh video (HTTP ${mediaRes.status}).`);
+
+      const total = Number(mediaRes.headers.get('Content-Length') || mediaRes.headers.get('Estimated-Content-Length')) || 0;
+      const reader = mediaRes.body.getReader();
+      const chunks = [];
+      let received = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        received += value.length;
+        setFetchProgress(`Mengunduh video... ${formatBytes(received)}`, total ? Math.min(99, (received / total) * 100) : null);
+      }
+      const type = mediaRes.headers.get('Content-Type') || 'video/mp4';
+      const safeTitle = (yt.title || data.filename || `youtube-${yt.id}`).replace(/[^\w\- ]+/g, '').trim().slice(0, 60) || `youtube-${yt.id}`;
+      return new File(chunks, `${safeTitle}.mp4`, { type });
+    }
+
+    $('ytFetchBtn').addEventListener('click', async () => {
+      if (!yt.id) return;
+      if (yt.player && yt.player.pauseVideo) yt.player.pauseVideo();
+      const btn = $('ytFetchBtn');
+      btn.disabled = true; btn.classList.add('opacity-60');
+      $('ytFallback').classList.add('hidden');
+      pendingTrim = { start: yt.start, end: yt.end };
+      try {
+        const file = await fetchFromCobalt();
+        setFetchProgress('Selesai! Video masuk ke editor.', 100);
+        setYtStep(3);
+        handleVideoFile(file);
+        setTimeout(() => $('ytFetchStatus').classList.add('hidden'), 2500);
+      } catch (err) {
+        showFallback(err.message);
+      } finally {
+        btn.disabled = false; btn.classList.remove('opacity-60');
+      }
+    });
+
+    $('videoInputFallback').addEventListener('change', e => {
+      pendingTrim = { start: yt.start, end: yt.end };
+      handleVideoFile(e.target.files[0]);
+      setYtStep(3);
+    });
 
     // --- TRIMMER & CROP ---
     function updateClipDurationBadge() {
